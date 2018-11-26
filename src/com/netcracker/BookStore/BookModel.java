@@ -2,12 +2,13 @@ package com.netcracker.BookStore;
 
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableModel;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-public class BookModel extends AbstractTableModel implements TableModel {
+public class BookModel extends AbstractTableModel implements TableModel, Serializable {
     private List<Book> books= new LinkedList<>();
     private List<String> columns = new ArrayList<>();
     private String[] columnsName = {"Authors",

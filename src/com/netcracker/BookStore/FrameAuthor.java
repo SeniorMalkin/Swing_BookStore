@@ -47,14 +47,6 @@ public class FrameAuthor extends JFrame {
         btn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String val = text2.getText();
-                int count = 0;
-                for (char c: val.toCharArray()
-                     ) {
-                    if(c == '@'){
-                        count++;
-                    }
-                }
                 char sex;
                 if(gender.male == comboBox.getSelectedItem()) {
                     sex = 'm';
@@ -62,8 +54,8 @@ public class FrameAuthor extends JFrame {
                 else {
                     sex = 'f';
                 }
-                if(count == 1) {
-                    author = new Author(text1.getText(),val,sex);
+                if(isValidMail(text2.getText())) {
+                    author = new Author(text1.getText(),text2.getText(),sex);
                     countFrame--;
                     setVisible(false);
                 }
@@ -77,6 +69,23 @@ public class FrameAuthor extends JFrame {
         Panel.add(panel);
         add(Panel);
         setVisible(true);
+    }
+
+    private boolean isValidMail(String str){
+        int count = 0;
+        for (char c: str.toCharArray()
+        ) {
+            if(c == '@'){
+                count++;
+            }
+        }
+
+        if(count == 1){
+            return true;
+        }
+        else{
+            return false;
+        }
     }
 
     public int getCountFrame() {

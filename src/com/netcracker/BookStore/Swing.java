@@ -9,6 +9,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.*;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.GregorianCalendar;
@@ -26,11 +28,34 @@ public class Swing extends JFrame {
     List<Author> authors = new ArrayList<>();
     authors.add(new Author("Dan Braun" , "sismos@julvar", 'm'));
     Book first = new Book(authors,"Inferno",Genre.ActionAndAdventure,400);
+    URL url = getClass().getResource("BookStore.dat");
+    File file = new File(url.getPath());
     BookModel m = new BookModel();
-    for(int i=0;i<100;i++) {
-        m.addBook(first);
-        first = new Book(authors,"Inferno" + i,Genre.ActionAndAdventure,400);
+    /*
+    if(file.length() != 0){
+        try {
+            ObjectInputStream in = new ObjectInputStream(new FileInputStream(url.getPath()));
+            m = (BookModel) in.readObject();
+        }
+        catch(FileNotFoundException e){
+
+        }
+        catch(IOException e){
+
+        }
+        catch (ClassNotFoundException e){
+
+        }
     }
+    else {
+
+    }
+    */
+    for (int i = 0; i < 10; i++) {
+        m.addBook(first);
+        first = new Book(authors, "Inferno" + i, Genre.ActionAndAdventure, 400);
+    }
+
     JTable table = new JTable(m);
     JPanel panel = new JPanel(new GridLayout(1,2,17,0));
     panel.add(add);
@@ -47,7 +72,9 @@ public class Swing extends JFrame {
     panell.add(panel1);
     panell.add(panel3);
     add(panell,BorderLayout.SOUTH);
-    remove.addActionListener(new ActionListener() {
+
+
+        remove.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
             int[] selectedRows = table.getSelectedRows();
@@ -59,13 +86,11 @@ public class Swing extends JFrame {
             table.updateUI();
         }
     });
-
-
     add.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-
-            FrameBook book = new FrameBook();
+            Book defBook = new Book(null," ",Genre.ActionAndAdventure," ","YYYY",0,0,"0+");
+            FrameBook book = new FrameBook(" Add Book ",defBook);
             book.addWindowListener(new WindowAdapter() {
 
                 @Override
@@ -80,6 +105,32 @@ public class Swing extends JFrame {
 
         }
     });
+    edit.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            int[] selectedRows = table.getSelectedRows();
+            if(selectedRows.length != 1){
+                JOptionPane.showMessageDialog(edit,"Please,select only one row");
+            }
+            else{
+                BookModel model = (BookModel) table.getModel();
+                Book selBook = model.getBook(selectedRows[0]);
+                FrameBook book = new FrameBook(" Edit Book ",selBook);
+                book.addWindowListener(new WindowAdapter() {
+                    @Override
+                    public void windowDeactivated(WindowEvent e) {
+                        //super.windowClosing(e);
+                        if(book.getCountFrame() == 0) {
+                            m.editBook(book.getNewBook(),selBook);
+                            book.dispose();
+                            table.updateUI();
+                        }
+                    }
+                });
+
+            }
+        }
+    });
 
 
 
@@ -88,10 +139,10 @@ public class Swing extends JFrame {
     setVisible(true);
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args)  {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
-            public void run() {
+            public void run(){
                 new Swing();
             }
         });
