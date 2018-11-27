@@ -15,12 +15,13 @@ public class FrameBook extends JFrame {
     private int countFrame = 1;
     public FrameBook(String head, Book currBook) {
         super(head);
-        setSize(400, 500);
+        setSize(450, 500);
         setLocation(150, 100);
         JPanel Panel = new JPanel(new GridLayout(9,2,0,0));
-        JPanel jPanel1 = new JPanel(new GridLayout(1,2,47,0));
+        JPanel jPanel1 = new JPanel(new GridLayout(1,3,16,0));
         JLabel lb1 = new JLabel("Authors:");
         JButton button = new JButton("Add Author");
+        JButton remove = new JButton("Remove Authors");
         if(currBook.getAuthors() != null){
             auths = currBook.getAuthors();
         }
@@ -41,9 +42,21 @@ public class FrameBook extends JFrame {
                 });
             }
         });
+        remove.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(auths.size() !=0){
+                    auths.clear();
+                }
+                else{
+                    message(remove,"authors");
+                }
+            }
+        });
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         jPanel1.add(lb1);
         jPanel1.add(button);
+        jPanel1.add(remove);
         panel.add(jPanel1);
         Panel.add(panel);
         ///////////////////////////////////////////////////////////////////////////
@@ -67,7 +80,7 @@ public class FrameBook extends JFrame {
         panel.add(jPanel1);
         Panel.add(panel);
         /////////////////////////////////////////////////////////////////////////
-        jPanel1 = new JPanel(new GridLayout(1,2,8,0));
+        jPanel1 = new JPanel(new GridLayout(1,2,30,0));
         lb1 = new JLabel("Year:");
         JTextField year = new JTextField(currBook.getYear(),10);
         panel = new JPanel(new FlowLayout(FlowLayout.LEFT));

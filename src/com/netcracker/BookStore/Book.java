@@ -1,12 +1,10 @@
 package com.netcracker.BookStore;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
+import java.io.Serializable;
 import java.util.List;
 
 enum Genre {ScienceFiction,Satire,Drama,ActionAndAdventure,Romance,Mystery,Horror};
-public class Book {
+public class Book implements Serializable {
     private List<Author> authors;
     private String title;
     private Genre genre;
