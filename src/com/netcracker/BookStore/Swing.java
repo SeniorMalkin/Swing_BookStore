@@ -7,9 +7,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.*;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
+
 
 public class Swing extends JFrame {
     public Swing() {
@@ -22,25 +20,10 @@ public class Swing extends JFrame {
             JButton remove = new JButton("Remove");
             JButton edit = new JButton("Edit");
             JButton save = new JButton("Save");
-/*
-            List<Author> authors = new ArrayList<>();
-            authors.add(new Author("Dan Braun", "sismos@julvar", 'm'));
-            Book first = new Book(authors, "Inferno", Genre.ActionAndAdventure, 400);
-*/
 
-            URL url = getClass().getResource("BookStore.dat");
-            FileInputStream fis = new FileInputStream(url.getPath());
+            FileInputStream fis = new FileInputStream("BookStore.dat");
             ObjectInputStream in = new ObjectInputStream(fis);
             BookModel m = (BookModel)in.readObject();
-/*
-
-            BookModel m = new BookModel();
-            for (int i = 0; i < 10; i++) {
-                m.addBook(first);
-                first = new Book(authors, "Inferno" + i, Genre.ActionAndAdventure, 400);
-            }
-*/
-
 
             JTable table = new JTable(m);
             JPanel panel = new JPanel(new GridLayout(1, 2, 17, 0));
@@ -123,13 +106,13 @@ public class Swing extends JFrame {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     try {
-                        FileOutputStream fos = new FileOutputStream(url.getPath());
+                        FileOutputStream fos = new FileOutputStream("BookStore.dat");
                         ObjectOutputStream oos = new ObjectOutputStream(fos);
                         oos.writeObject(m);
                         oos.flush();
                         oos.close();
                     } catch (IOException exc) {
-
+                        exc.printStackTrace();
                     }
                 }
             });
@@ -137,9 +120,22 @@ public class Swing extends JFrame {
             JScrollPane jScrollPane = new JScrollPane(table);
             add(jScrollPane, BorderLayout.CENTER);
             setVisible(true);
-        }
 
-        catch ( ClassNotFoundException | IOException exp){
+        } catch ( ClassNotFoundException exp){
+            exp.printStackTrace();
+        } catch(IOException eof){
+            BookModel m = new BookModel();
+            try {
+                FileOutputStream fos = new FileOutputStream("BookStore.dat");
+                ObjectOutputStream oos = new ObjectOutputStream(fos);
+                oos.writeObject(m);
+                oos.flush();
+                oos.close();
+                JOptionPane.showMessageDialog(this,"Please,rerun application!");
+                System.exit(0);
+            } catch (IOException exc) {
+                exc.printStackTrace();
+            }
         }
     }
 
