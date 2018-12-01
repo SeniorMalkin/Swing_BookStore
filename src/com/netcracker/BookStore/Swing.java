@@ -15,7 +15,7 @@ public class Swing extends JFrame {
         try {
             setSize(500, 500);
             setLocation(150, 100);
-            setDefaultCloseOperation(EXIT_ON_CLOSE);
+            setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
             JButton add = new JButton("Add");
             JButton remove = new JButton("Remove");
             JButton edit = new JButton("Edit");
@@ -26,6 +26,8 @@ public class Swing extends JFrame {
             BookModel m = (BookModel)in.readObject();
 
             JTable table = new JTable(m);
+            table.setDefaultRenderer(Author.class,new AuthorRenderer());
+            table.setRowHeight(30);
             JPanel panel = new JPanel(new GridLayout(1, 2, 17, 0));
             panel.add(add);
             panel.add(remove);
@@ -68,7 +70,15 @@ public class Swing extends JFrame {
                             //super.windowClosing(e);
                             if (book.getCountFrame() == 0) {
                                 m.addBook(book.getNewBook());
-                                book.dispose();
+                                book.setVisible(false);
+                            }
+                        }
+                        @Override
+                        public void windowClosing(WindowEvent e){
+                            int result = JOptionPane.showConfirmDialog(book,"Are you sure you want to close this window? " +
+                                    "All unsaved data will be lost","Closing",JOptionPane.YES_NO_OPTION,JOptionPane.WARNING_MESSAGE);
+                            if(result == JOptionPane.YES_OPTION){
+                                book.setVisible(false);
                             }
                         }
                     });
@@ -117,6 +127,18 @@ public class Swing extends JFrame {
                 }
             });
 
+            addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosing(WindowEvent e){
+                    int result = JOptionPane.showConfirmDialog(table,"Are you sure you want to exit? " +
+                            "All unsaved data will be lost","Closing",JOptionPane.YES_NO_OPTION,JOptionPane.WARNING_MESSAGE);
+                    if(result == JOptionPane.YES_OPTION){
+                        Swing.this.setVisible(false);
+                        System.exit(0);
+                    }
+                }
+            });
+
             JScrollPane jScrollPane = new JScrollPane(table);
             add(jScrollPane, BorderLayout.CENTER);
             setVisible(true);
@@ -138,6 +160,8 @@ public class Swing extends JFrame {
             }
         }
     }
+
+
 
     public static void main(String[] args)  {
         SwingUtilities.invokeLater(new Runnable() {

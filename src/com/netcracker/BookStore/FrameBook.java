@@ -7,131 +7,114 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.*;
-import java.util.List;
 
 public class FrameBook extends JFrame {
-    private List<Author> auths =  new ArrayList<>();
+    private Author auths;
     private Book newBook;
     private int countFrame = 1;
     public FrameBook(String head, Book currBook) {
         super(head);
         setSize(450, 500);
         setLocation(150, 100);
-        JPanel Panel = new JPanel(new GridLayout(9,2,0,0));
-        JPanel jPanel1 = new JPanel(new GridLayout(1,3,16,0));
-        JLabel lb1 = new JLabel("Authors:");
-        JButton button = new JButton("Add Author");
-        JButton remove = new JButton("Remove Authors");
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        JPanel Panel = new JPanel(new GridLayout(8,2,0,10));
+        JPanel jPanel1 = new JPanel(new GridLayout(1,2,10,0));
+        JLabel lb1 = new JLabel("Authors:       ");
+        JButton button = new JButton("Add");
+        JButton remove = new JButton("Remove");
         if(currBook.getAuthors() != null){
             auths = currBook.getAuthors();
         }
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                FrameAuthor auth = new FrameAuthor();
-                auth.addWindowListener(new WindowAdapter() {
-                    @Override
-                    public void windowDeactivated(WindowEvent e) {
-                        //super.windowClosing(e);
-                        if(auth.getCountFrame() == 0) {
-                            auths.add(auth.author);
-                            auth.dispose();
-                           // countFrame--;
+                if(auths != null){
+                    JOptionPane.showMessageDialog(button,"Author already added");
+                }
+                else {
+                    FrameAuthor auth = new FrameAuthor();
+                    auth.addWindowListener(new WindowAdapter() {
+                        @Override
+                        public void windowDeactivated(WindowEvent e) {
+                            //super.windowClosing(e);
+
+                            if (auth.getCountFrame() == 0) {
+                                auths = auth.author;
+                                auth.setVisible(false);
+                                // countFrame--;
+                            }
                         }
-                    }
-                });
+                        @Override
+                        public void windowClosing(WindowEvent e){
+                            int result = JOptionPane.showConfirmDialog(auth,"Are you sure you want to close this window? " +
+                                    "All unsaved data will be lost","Closing",JOptionPane.YES_NO_OPTION,JOptionPane.WARNING_MESSAGE);
+                            if(result == JOptionPane.YES_OPTION){
+                                auth.setVisible(false);
+                            }
+                        }
+                    });
+                }
             }
         });
         remove.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(auths.size() !=0){
-                    auths.clear();
+                if(auths != null){
+                    auths = null;
                 }
                 else{
                     message(remove,"authors");
                 }
             }
         });
-        JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        jPanel1.add(lb1);
+
         jPanel1.add(button);
         jPanel1.add(remove);
-        panel.add(jPanel1);
-        Panel.add(panel);
+        addRow(Panel,lb1,jPanel1);
         ///////////////////////////////////////////////////////////////////////////
-        jPanel1 = new JPanel(new GridLayout(1,2,8,0));
-        lb1 = new JLabel("Title:");
-        JTextField title = new JTextField(currBook.getTitle(),12);
-        panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        jPanel1.add(lb1);
-        jPanel1.add(title);
-        panel.add(jPanel1);
-        Panel.add(panel);
-        //////////////////////////////////////////////////////////////////////////
         jPanel1 = new JPanel(new GridLayout(1,2,0,0));
-        lb1 = new JLabel("Genre:");
+        lb1 = new JLabel("Title:         ");
+        JTextField title = new JTextField(currBook.getTitle(),12);
+        addRow(Panel,lb1,title);
+        //////////////////////////////////////////////////////////////////////////
+        lb1 = new JLabel("Genre:         ");
         Genre[] arr = {Genre.ActionAndAdventure,Genre.Drama,Genre.Horror,Genre.Mystery,Genre.Romance,Genre.Satire,Genre.ScienceFiction};
         JComboBox<Genre> genreJComboBox = new JComboBox<>(arr);
         genreJComboBox.setSelectedItem(currBook.getGenre());
-        panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        jPanel1.add(lb1);
-        jPanel1.add(genreJComboBox);
-        panel.add(jPanel1);
-        Panel.add(panel);
+        addRow(Panel,lb1,genreJComboBox);
         /////////////////////////////////////////////////////////////////////////
-        jPanel1 = new JPanel(new GridLayout(1,2,30,0));
-        lb1 = new JLabel("Year:");
-        JTextField year = new JTextField(currBook.getYear(),10);
-        panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        jPanel1.add(lb1);
-        jPanel1.add(year);
-        panel.add(jPanel1);
-        Panel.add(panel);
+        jPanel1 = new JPanel(new GridLayout(1,2,0,0));
+        lb1 = new JLabel("Year:          ");
+        JTextField year = new JTextField(currBook.getYear(),12);
+        addRow(Panel,lb1,year);
         /////////////////////////////////////////////////////////////////////////
-        jPanel1 = new JPanel(new GridLayout(1,2,8,0));
+        jPanel1 = new JPanel(new GridLayout(1,2,0,0));
         lb1 = new JLabel("Publish office:");
         JTextField office = new JTextField(currBook.getPublishOffice(),12);
-        panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        jPanel1.add(lb1);
-        jPanel1.add(office);
-        panel.add(jPanel1);
-        Panel.add(panel);
+        addRow(Panel,lb1,office);
         ///////////////////////////////////////////////////////////////////////
-        jPanel1 = new JPanel(new GridLayout(1,2,8,0));
-        lb1 = new JLabel("Qty:");
+        jPanel1 = new JPanel(new GridLayout(1,2,0,0));
+        lb1 = new JLabel("Qty:           ");
         JTextField qty = new JTextField(Integer.toString(currBook.getQty()),12);
-        panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        jPanel1.add(lb1);
-        jPanel1.add(qty);
-        panel.add(jPanel1);
-        Panel.add(panel);
+        addRow(Panel,lb1,qty);
         ///////////////////////////////////////////////////////////////////////
-        jPanel1 = new JPanel(new GridLayout(1,2,8,0));
-        lb1 = new JLabel("Price:");
+        jPanel1 = new JPanel(new GridLayout(1,2,0,0));
+        lb1 = new JLabel("Price:         ");
         JTextField price = new JTextField(Double.toString(currBook.getPrice()),12);
-        panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        jPanel1.add(lb1);
-        jPanel1.add(price);
-        panel.add(jPanel1);
-        Panel.add(panel);
+        addRow(Panel,lb1,price);
         ////////////////////////////////////////////////////////////////////////
-        jPanel1 = new JPanel(new GridLayout(1,2,72,0));
-        lb1 = new JLabel("Age Require:");
+        jPanel1 = new JPanel(new GridLayout(1,2,0,0));
+        lb1 = new JLabel("Age Require:   ");
         String[] age = {"0+", "6+", "12+", "16+", "18+"};
         JComboBox<String> ageJComboBox = new JComboBox<>(age);
         ageJComboBox.setSelectedItem(currBook.getAgeRequire());
-        panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        jPanel1.add(lb1);
-        jPanel1.add(ageJComboBox);
-        panel.add(jPanel1);
-        Panel.add(panel);
+        addRow(Panel,lb1,ageJComboBox);
         //////////////////////////////////////////////////////////////////////////
         JButton btn = new JButton("Submit");
         btn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(auths.size() != 0){
+                if(auths != null){
                     if(isValidYear(year.getText())) {
                         if (isValidQty(qty.getText())) {
                             if(isValidPrice(price.getText())) {
@@ -159,10 +142,14 @@ public class FrameBook extends JFrame {
                 }
             }
         });
-        panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+
+        JPanel Panel1 = new JPanel(new BorderLayout());
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         panel.add(btn);
-        Panel.add(panel);
-        add(Panel);
+
+        Panel1.add(Panel,BorderLayout.CENTER);
+        Panel1.add(panel,BorderLayout.SOUTH);
+        add(Panel1);
         setVisible(true);
     }
 
@@ -230,5 +217,14 @@ public class FrameBook extends JFrame {
 
     public int getCountFrame() {
         return countFrame;
+    }
+
+    private void addRow(JPanel Panel,Component Label, Component other){
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        panel.add(Label);
+        Panel.add(panel);
+        panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        panel.add(other);
+        Panel.add(panel);
     }
 }

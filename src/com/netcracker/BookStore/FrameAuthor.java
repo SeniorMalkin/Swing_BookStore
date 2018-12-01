@@ -13,6 +13,7 @@ public class FrameAuthor extends JFrame {
         super("  Author:  ");
         setSize(350, 250);
         setLocation(150, 100);
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         JPanel Panel = new JPanel(new GridLayout(4,2,0,0));
         JPanel jPanel1 = new JPanel(new GridLayout(1,2,0,0));
         JLabel lb1 = new JLabel("Name:");

@@ -1,11 +1,10 @@
 package com.netcracker.BookStore;
-
 import java.io.Serializable;
-import java.util.List;
+
 
 enum Genre {ScienceFiction,Satire,Drama,ActionAndAdventure,Romance,Mystery,Horror};
 public class Book implements Serializable {
-    private List<Author> authors;
+    private Author authors;
     private String title;
     private Genre genre;
     private String publishOffice;
@@ -14,7 +13,7 @@ public class Book implements Serializable {
     private double price;
     private String AgeRequire;
 
-    public Book(List<Author> authors, String title, Genre genre, String publishOffice, String year, int qty, double price, String ageRequire) {
+    public Book(Author authors, String title, Genre genre, String publishOffice, String year, int qty, double price, String ageRequire) {
         this.authors = authors;
         this.title = title;
         this.genre = genre;
@@ -25,7 +24,7 @@ public class Book implements Serializable {
         this.AgeRequire = ageRequire;
     }
 
-    public Book(List<Author> authors, String title, Genre genre, double price) {
+    public Book(Author authors, String title, Genre genre, double price) {
         this.authors = authors;
         this.title = title;
         this.genre = genre;
@@ -36,11 +35,11 @@ public class Book implements Serializable {
         this.AgeRequire = "0+";
     }
 
-    public List<Author> getAuthors() {
+    public Author getAuthors() {
         return authors;
     }
 
-    public void setAuthors(List<Author> authors) {
+    public void setAuthors(Author authors) {
         this.authors = authors;
     }
 
